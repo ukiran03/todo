@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
+	"ukiran/todo"
 )
 
 var (
@@ -41,8 +42,15 @@ func TestTodoCLI(t *testing.T) {
 	}
 	cmdPath := filepath.Join(dir, binName)
 
-	t.Run("AddNewTask", func(t *testing.T) {
+	t.Run("AddNewTaskFromArguments", func(t *testing.T) {
 		cmd := exec.Command(cmdPath, "-add", task)
+		if err := cmd.Run(); err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	t.Run("CompleteTask1", func(t *testing.T) {
+		cmd := exec.Command(cmdPath, "-complete", "1")
 		if err := cmd.Run(); err != nil {
 			t.Fatal(err)
 		}
@@ -68,7 +76,7 @@ func TestTodoCLI(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		expected := fmt.Sprintf("  1: %s\n  2: %s\n", task, task2)
+		expected := fmt.Sprintf("%sX %s1: %s\n  2: %s\n", todo.Green, todo.Reset, task, task2)
 		if expected != string(out) {
 			t.Errorf("\nExpected %q\nGot %q\n", expected, string(out))
 		}
