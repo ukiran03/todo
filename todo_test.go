@@ -3,7 +3,8 @@ package todo_test
 import (
 	"os"
 	"testing"
-	"ukiran/todo"
+
+	"github.com/ukiran03/todo"
 )
 
 // TestAdd tests the Add method of the List type

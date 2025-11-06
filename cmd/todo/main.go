@@ -7,7 +7,8 @@ import (
 	"io"
 	"os"
 	"strings"
-	"ukiran/todo"
+
+	"github.com/ukiran03/todo"
 )
 
 var todoFileName = ".todo.json"

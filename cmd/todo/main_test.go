@@ -8,7 +8,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
-	"ukiran/todo"
+
+	"github.com/ukiran03/todo"
 )
 
 var (
