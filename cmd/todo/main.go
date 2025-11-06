@@ -19,7 +19,7 @@ func main() {
 	}
 
 	file := flag.String("file", "", "Write the todo items to File")
-	add := flag.Bool("add", false, "Add task to the ToDo list via Args or STDIN")
+	add := flag.Bool("add", false, "Add task to the ToDo list via Args or STDIN\nmutiple lines for multiple tasks")
 	list := flag.Bool("list", false, "List all tasks")
 	complete := flag.Int("complete", 0, "Item to be completed")
 	delete := flag.Int("delete", 0, "Item to be deleted")
@@ -66,12 +66,14 @@ func main() {
 			os.Exit(1)
 		}
 	case *add:
-		task, err := getTask(os.Stdin, flag.Args()...)
+		tasks, err := getTasks(os.Stdin, flag.Args()...)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
-		l.Add(task)
+		for _, t := range tasks {
+			l.Add(t)
+		}
 		if err := l.Save(todoFileName); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
@@ -97,18 +99,26 @@ func main() {
 }
 
 // getTask function decides where to get the description for a new
-// task from: arguments or STDIN
-func getTask(r io.Reader, args ...string) (string, error) {
+// task from: Args or STDIN
+func getTasks(r io.Reader, args ...string) ([]string, error) {
+	var tasks []string
+	// via ARGs
 	if len(args) > 0 {
-		return strings.Join(args, " "), nil
+		task := strings.Join(args, " ")
+		tasks = append(tasks, task)
+		return tasks, nil
 	}
+	// via STDIN
 	s := bufio.NewScanner(r)
-	s.Scan()
+	for s.Scan() {
+		if len(s.Text()) == 0 {
+			return nil, fmt.Errorf("Task cannot be blank")
+		}
+		tasks = append(tasks, s.Text())
+	}
+
 	if err := s.Err(); err != nil {
-		return "", err
+		return nil, err
 	}
-	if len(s.Text()) == 0 {
-		return "", fmt.Errorf("Task cannot be blank")
-	}
-	return s.Text(), nil
+	return tasks, nil
 }
