@@ -8,6 +8,12 @@ import (
 	"time"
 )
 
+const (
+	Blue  = "\033[34m"
+	Green = "\033[32m"
+	Reset = "\033[0m"
+)
+
 // item struct represents a Todo Item
 type item struct {
 	Task        string
@@ -77,4 +83,17 @@ func (l *List) Get(filename string) error {
 		return nil
 	}
 	return json.Unmarshal(data, l)
+}
+
+func (l *List) String() string {
+	formatted := ""
+	for k, t := range *l {
+		prefix := "  "
+		if t.Done {
+			prefix = Green + "X " + Reset
+			// prefix = "X "
+		}
+		formatted += fmt.Sprintf("%s%d: %s\n", prefix, k+1, t.Task)
+	}
+	return formatted
 }
