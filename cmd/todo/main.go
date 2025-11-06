@@ -22,6 +22,7 @@ func main() {
 	list := flag.Bool("list", false, "List all tasks")
 	complete := flag.Int("complete", 0, "Item to be completed")
 	delete := flag.Int("delete", 0, "Item to be deleted")
+	verbose := flag.Bool("verbose", false, "Show verbose List")
 	flag.Parse()
 
 	if *file != "" {
@@ -68,6 +69,12 @@ func main() {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
+	case *verbose:
+		var formated string
+		for k, t := range *l {
+			formated += t.FormatTask(k, true, true)
+		}
+		fmt.Print(formated)
 	default:
 		fmt.Fprintln(os.Stderr, "Invalid option")
 		os.Exit(1)

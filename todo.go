@@ -86,14 +86,24 @@ func (l *List) Get(filename string) error {
 }
 
 func (l *List) String() string {
-	formatted := ""
-	for k, t := range *l {
-		prefix := "  "
-		if t.Done {
-			prefix = Green + "X " + Reset
-			// prefix = "X "
-		}
-		formatted += fmt.Sprintf("%s%d: %s\n", prefix, k+1, t.Task)
+	var formated string
+	for i, t := range *l {
+		formated += t.FormatTask(i, true, false)
 	}
-	return formatted
+	return formated
+}
+
+func (t item) FormatTask(index int, status, verbose bool) string {
+	var timeInfo, statusInfo string
+	if verbose {
+		timeInfo = " (" + t.CreatedAt.Format(time.ANSIC) + ")"
+	}
+	if status {
+		if t.Done {
+			statusInfo = Green + "X " + Reset
+		} else {
+			statusInfo = "  "
+		}
+	}
+	return fmt.Sprintf("%s%d: %s%v\n", statusInfo, index+1, t.Task, timeInfo)
 }
