@@ -17,14 +17,21 @@ func main() {
 		fmt.Fprintln(flag.CommandLine.Output(), "Usage information:")
 		flag.PrintDefaults()
 	}
+
 	file := flag.String("file", "", "Write the todo items to File")
-	add := flag.Bool("add", false, "Add task to the ToDo list")
+	add := flag.Bool("add", false, "Add task to the ToDo list via Args or STDIN")
 	list := flag.Bool("list", false, "List all tasks")
 	complete := flag.Int("complete", 0, "Item to be completed")
 	delete := flag.Int("delete", 0, "Item to be deleted")
 	verbose := flag.Bool("verbose", false, "Show verbose List")
+	pending := flag.Bool("pending", false, "Show Incomplete tasks")
+
 	flag.Parse()
 
+	// check if the user defined the ENV VAR for a custom filename
+	if os.Getenv("TODO_FILENAME") != "" {
+		todoFileName = os.Getenv("TODO_FILENAME")
+	}
 	if *file != "" {
 		todoFileName = *file
 		fmt.Println(todoFileName)
@@ -69,6 +76,14 @@ func main() {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
+	case *pending:
+		var formated string
+		for k, t := range *l {
+			if !t.Done {
+				formated += t.FormatTask(k, true, true)
+			}
+		}
+		fmt.Print(formated)
 	case *verbose:
 		var formated string
 		for k, t := range *l {
