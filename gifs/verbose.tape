@@ -2,9 +2,9 @@ Output verbose.gif
 
 Set Theme "MaterialDark"
 Set FontFamily "Iosevka Medium"
-Set FontSize 46
-Set Width 1200
-Set Height 600
+Set FontSize 32
+Set Width 1000
+Set Height 400
 
 Type "todo -verbose"
 Enter
