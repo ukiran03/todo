@@ -7,17 +7,22 @@ import (
 	"ukiran/todo"
 )
 
-const todoFileName = ".todo.json"
+var todoFileName = ".todo.json"
 
 func main() {
 	flag.Usage = func() {
 		fmt.Fprintln(flag.CommandLine.Output(), "Usage information:")
 		flag.PrintDefaults()
 	}
+	file := flag.String("file", "", "Write the todo items to File")
 	task := flag.String("task", "", "Task to be included in the todo list\nA quoted string")
 	list := flag.Bool("list", false, "List all tasks")
 	complete := flag.Int("complete", 0, "Item to be completed")
 	flag.Parse()
+
+	if *file != "" {
+		todoFileName = *file
+	}
 
 	l := &todo.List{}
 	// initial read to do items from file
